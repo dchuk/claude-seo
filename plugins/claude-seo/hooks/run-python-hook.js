@@ -2,6 +2,7 @@
 "use strict";
 
 const { spawnSync } = require("child_process");
+const fs = require("fs");
 
 function stripWrappingQuotes(value) {
   return value.replace(/^["']|["']$/g, "");
@@ -37,9 +38,37 @@ function probe(candidate) {
   return result.status === 0 && Boolean((result.stdout || "").trim()) && !isStoreStubOutput(output);
 }
 
+function pathsFromHookInput() {
+  let payload;
+  try {
+    const input = fs.readFileSync(0, "utf8").trim();
+    payload = input ? JSON.parse(input) : {};
+  } catch (_) {
+    return [];
+  }
+
+  const toolInput = payload.tool_input || payload.toolInput || {};
+  const directPath = toolInput.file_path || toolInput.path;
+  if (directPath) {
+    return [directPath];
+  }
+
+  const patch = toolInput.patch || toolInput.input || "";
+  const paths = [];
+  for (const match of String(patch).matchAll(/^\*\*\* (?:Add|Update) File: (.+)$/gm)) {
+    paths.push(match[1].trim());
+  }
+  return [...new Set(paths)];
+}
+
 function main() {
-  const [, , hookScript, ...hookArgs] = process.argv;
+  const [, , hookScript, ...explicitArgs] = process.argv;
   if (!hookScript) {
+    process.exit(0);
+  }
+
+  const hookArgs = explicitArgs.length ? explicitArgs : pathsFromHookInput();
+  if (!hookArgs.length) {
     process.exit(0);
   }
 
@@ -47,13 +76,25 @@ function main() {
     if (!probe(candidate)) {
       continue;
     }
-    const result = spawnSync(candidate.exe, [...candidate.args, hookScript, ...hookArgs], {
-      stdio: "inherit",
-    });
-    if (result.error) {
-      continue;
+    let exitStatus = 0;
+    let ran = false;
+    for (const hookArg of hookArgs) {
+      const result = spawnSync(candidate.exe, [...candidate.args, hookScript, hookArg], {
+        stdio: "inherit",
+      });
+      if (result.error) {
+        continue;
+      }
+      ran = true;
+      if (result.status === 2) {
+        exitStatus = 2;
+      } else if (result.status && exitStatus === 0) {
+        exitStatus = result.status;
+      }
     }
-    process.exit(result.status === null ? 1 : result.status);
+    if (ran) {
+      process.exit(exitStatus);
+    }
   }
 
   console.error(

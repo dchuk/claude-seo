@@ -275,7 +275,11 @@ def sync(args):
     root = script_root()
     refs = root / "skills" / "seo-flow" / "references"
     today = datetime.date.today().isoformat()
-    headers = _base_headers()
+    # Prefer the authenticated gh CLI session when available. Starting with
+    # anonymous headers can exhaust GitHub's shared rate limit during a full
+    # prompt-library sync before the existing 403 retry path gets a chance to
+    # authenticate. _authed_headers() safely falls back to base headers.
+    headers = _authed_headers()
     changes = {"added": [], "updated": [], "unchanged": [], "hashes": {}}
     prompt_rows = []
 

@@ -1,6 +1,6 @@
 ---
 name: seo
-description: "Comprehensive SEO analysis for any website or business type. Full site audits, single-page analysis, technical SEO (crawlability, indexability, Core Web Vitals with INP), schema markup, content quality (E-E-A-T), image optimization, sitemap analysis, and GEO for AI Overviews/ChatGPT/Perplexity. Industry detection for SaaS, e-commerce, local, publishers, agencies. Triggers on: SEO, audit, schema, Core Web Vitals, sitemap, E-E-A-T, AI Overviews, GEO, technical SEO, content quality, page speed, structured data."
+description: "Comprehensive SEO analysis for any website or business type. Full site audits, single-page analysis, technical SEO (crawlability, indexability, Core Web Vitals with INP), schema markup, content quality (E-E-A-T), image optimization, sitemap analysis, and GEO for AI Overviews/ChatGPT/Perplexity. Industry detection for SaaS, e-commerce, local, publishers, agencies. Also installs the plugin's specialist agents when asked to set up Claude SEO for Codex. Triggers on: SEO, audit, schema, Core Web Vitals, sitemap, E-E-A-T, AI Overviews, GEO, technical SEO, content quality, page speed, structured data, set up SEO agents in Codex."
 user-invocable: true
 argument-hint: "[command] [url]"
 license: MIT
@@ -20,6 +20,20 @@ Comprehensive SEO analysis across all industries (SaaS, local services,
 e-commerce, publishers, agencies). Orchestrates 24 sub-skills (21 core + 1 framework
 integration + 2 extension mirrors) and 18 sub-agents. A separate optional Firecrawl
 extension is also installable (see "Optional Extensions" below).
+
+## Codex agent setup
+
+When the user asks to set up or refresh Claude SEO agents in Codex, resolve this
+`SKILL.md` to an absolute path and run the plugin-root installer located two
+directories above it:
+
+```bash
+python3 <absolute-plugin-root>/scripts/install_codex_agents.py --project-root "$(git rev-parse --show-toplevel)" --json
+```
+
+Report the eighteen generated agent names and tell the user to start a new Codex
+task so project custom-agent discovery refreshes. The installer updates only files
+it generated previously and refuses to replace an unmanaged collision.
 
 ## Quick Reference
 

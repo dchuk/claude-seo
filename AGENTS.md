@@ -20,6 +20,22 @@ expects (`name`, `description`, optional `model`, optional `tools`) and warns
 on Claude-Code-specific features (`maxTurns`, multi-line tool list with
 descriptive comments) that other harnesses may ignore but do not reject.
 
+### Native Codex plugin support
+
+Codex loads `plugins/claude-seo/.codex-plugin/plugin.json` and the repo marketplace at
+`.agents/plugins/marketplace.json`. Claude Code continues to load the existing
+`.claude-plugin` manifest. Both clients use the same canonical skills under
+`plugins/claude-seo/skills/`; the root `skills` path is a compatibility link.
+
+Claude agent Markdown remains canonical. Validate and install project-scoped
+Codex agent TOML with:
+
+```bash
+python3 scripts/install_codex_agents.py --check
+python3 scripts/install_codex_agents.py --project-root /path/to/project
+python3 -m unittest tests/test_codex_agents.py
+```
+
 ### Per-harness notes
 
 | Harness | How to load claude-seo |

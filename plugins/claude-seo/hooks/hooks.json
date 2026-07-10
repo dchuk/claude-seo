@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/run-python-hook.js\" \"${CLAUDE_PLUGIN_ROOT}/hooks/validate-schema.py\"",
+            "statusMessage": "Validating structured data"
+          }
+        ]
+      }
+    ]
+  }
+}

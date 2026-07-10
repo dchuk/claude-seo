@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "homepage": "https://claude-seo.md",
-  "repository": "https://github.com/AgriciDaniel/claude-seo",
+  "repository": "https://github.com/dchuk/claude-seo",
   "keywords": [
     "seo",
     "technical-seo",
@@ -47,6 +47,8 @@
     "headless-rendering",
     "ssrf-safe-fetchers",
     "ai-citation-optimization",
-    "synthesis-framework"
+    "synthesis-framework",
+    "openai-codex",
+    "universal-agent-skills"
   ]
 }

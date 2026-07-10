@@ -1,0 +1,29 @@
+{
+  "name": "claude-seo",
+  "version": "2.2.0-universal.4",
+  "description": "Universal SEO analysis plugin with 25 SEO skills and 18 specialist agents for Claude Code and OpenAI Codex.",
+  "author": {
+    "name": "AgriciDaniel",
+    "email": "agricidaniel@gmail.com",
+    "url": "https://github.com/AgriciDaniel"
+  },
+  "homepage": "https://claude-seo.md",
+  "repository": "https://github.com/dchuk/claude-seo",
+  "license": "MIT",
+  "keywords": ["seo", "technical-seo", "content", "schema", "google-search-console", "ga4", "agent-skills", "claude-code", "codex"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Claude SEO",
+    "shortDescription": "Technical SEO, content, schema, GEO, and Google data workflows.",
+    "longDescription": "Audit and improve technical SEO, content quality, structured data, local search, backlinks, AI visibility, Search Console, and GA4 with shared Agent Skills and specialist roles.",
+    "developerName": "AgriciDaniel; Codex port maintained by dchuk",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write", "Web search", "External APIs"],
+    "websiteURL": "https://claude-seo.md",
+    "defaultPrompt": [
+      "Audit this site for its highest-impact SEO problems.",
+      "Create a sourced SEO content brief for this query.",
+      "Analyze Search Console and GA4 performance."
+    ]
+  }
+}

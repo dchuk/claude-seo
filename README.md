@@ -1,8 +1,8 @@
 ![Claude SEO cover: a Claude Code command palette with /seo audit, schema, geo, content, and backlinks commands over a dark CRT panel](assets/cover.svg)
 
-# Claude SEO: SEO Skill for Claude Code
+# Claude SEO: SEO Skills for Claude Code and OpenAI Codex
 
-**Claude SEO is an open-source SEO analysis plugin for [Claude Code](https://claude.ai/claude-code).** It runs 25 sub-skills and 18 specialist agents in parallel across technical SEO, content quality (E-E-A-T), Schema.org markup, AI search optimization (GEO), local SEO, e-commerce, and international SEO. Every audit produces a prioritized action plan with testable recommendations grounded in primary-source guidance from Google.
+**Claude SEO is an open-source SEO analysis plugin for [Claude Code](https://claude.ai/claude-code) and [OpenAI Codex](https://developers.openai.com/codex).** It runs the same 25 sub-skills and 18 specialist agent prompts across both clients, covering technical SEO, content quality (E-E-A-T), Schema.org markup, AI search optimization (GEO), local SEO, e-commerce, and international SEO.
 
 [![CI](https://github.com/AgriciDaniel/claude-seo/actions/workflows/ci.yml/badge.svg)](https://github.com/AgriciDaniel/claude-seo/actions/workflows/ci.yml)
 [![Claude Code Skill](https://img.shields.io/badge/Claude%20Code-Skill-blue)](https://claude.ai/claude-code)
@@ -27,7 +27,7 @@
 
 Google Search Console for a site started 23 March 2026 and run on this workflow: total clicks and impressions across its first three months, through 12 June 2026.
 
-> Using Codex instead of Claude Code? Use [Codex SEO](https://github.com/AgriciDaniel/codex-seo), the Codex-first port with TOML agents, plugin packaging, deterministic runners, and the same SEO workflow surface.
+> This universal fork keeps Claude Code and Codex on the same skill and agent sources. [Codex SEO](https://github.com/AgriciDaniel/codex-seo) remains available as a separate Codex-first distribution with additional deterministic runners.
 
 ## Who this is for
 
@@ -72,17 +72,31 @@ Run a full audit and watch parallel agents fan out across the site:
 
 > ℹ️ **Which version are you installing?**
 >
-> - **Public open-source (default).** The commands below install from [`AgriciDaniel/claude-seo`](https://github.com/AgriciDaniel/claude-seo) — MIT, public releases, no membership required.
-> - **AI Marketing Hub Pro member?** Install the community version with early access instead: swap `AgriciDaniel/claude-seo` for `AI-Marketing-Hub/claude-seo` and the plugin slug `claude-seo@agricidaniel-claude-seo` for `claude-seo@ai-marketing-hub-claude-seo`. Requires `gh auth login` (or PAT) with access to the `AI-Marketing-Hub` org. If `/plugin marketplace add` 404s, DM in the [Skool community](https://www.skool.com/ai-marketing-hub-pro) to get added.
+> - **Universal public fork (default here).** The commands below install from [`dchuk/claude-seo`](https://github.com/dchuk/claude-seo), which tracks the MIT upstream and adds native Codex packaging.
+> - **Upstream-only Claude distribution.** Use [`AgriciDaniel/claude-seo`](https://github.com/AgriciDaniel/claude-seo) if you do not need the Codex compatibility layer.
 
 ### Plugin Install (Claude Code 1.0.33+)
 
 The fastest path. One-time marketplace add, then plugin install:
 
 ```bash
-/plugin marketplace add AgriciDaniel/claude-seo
-/plugin install claude-seo@agricidaniel-claude-seo
+/plugin marketplace add dchuk/claude-seo
+/plugin install claude-seo@dchuk-claude-seo
 ```
+
+### Plugin Install (OpenAI Codex)
+
+Add this fork as a Codex marketplace, install the plugin, then run its setup
+skill once in each project that should expose the specialist agents:
+
+```bash
+codex plugin marketplace add dchuk/claude-seo
+codex plugin add claude-seo@dchuk-claude-seo
+```
+
+Start a new Codex task and ask `$claude-seo:seo` to set up its specialist agents
+for the current project. Codex uses `$claude-seo:seo` and natural-language
+requests instead of Claude Code's `/seo` slash command.
 
 ### Manual Install (Unix / macOS / Linux)
 

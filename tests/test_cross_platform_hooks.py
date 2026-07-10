@@ -18,23 +18,23 @@ HOOK_LAUNCHER = REPO_ROOT / "hooks" / "run-python-hook.js"
 INSTALL_PS1 = REPO_ROOT / "install.ps1"
 
 
-def _post_tool_handler() -> dict:
+def _post_tool_config() -> dict:
     config = json.loads(HOOKS_JSON.read_text(encoding="utf-8"))
-    return config["hooks"]["PostToolUse"][0]["hooks"][0]
+    return config["hooks"]["PostToolUse"][0]
 
 
-def test_schema_hook_uses_exec_form_args_and_tool_input_placeholder() -> None:
-    handler = _post_tool_handler()
+def test_schema_hook_uses_cross_platform_command_and_matcher() -> None:
+    post_tool = _post_tool_config()
+    handler = post_tool["hooks"][0]
     serialized = json.dumps(handler)
 
     assert handler["type"] == "command"
-    assert handler["command"] == "node"
-    assert "args" in handler
-    assert handler["args"][0] == "${CLAUDE_PLUGIN_ROOT}/hooks/run-python-hook.js"
-    assert handler["args"][1] == "${CLAUDE_PLUGIN_ROOT}/hooks/validate-schema.py"
-    assert handler["args"][2] == "${tool_input.file_path}"
+    assert handler["command"].startswith("node ")
+    assert "${CLAUDE_PLUGIN_ROOT}/hooks/run-python-hook.js" in handler["command"]
+    assert "${CLAUDE_PLUGIN_ROOT}/hooks/validate-schema.py" in handler["command"]
+    assert "args" not in handler
+    assert "apply_patch" in post_tool["matcher"]
     assert "$FILE_PATH" not in serialized
-    assert "$" not in handler["command"]
     assert handler["command"] != "sh"
 
 
@@ -61,6 +61,35 @@ def test_hook_launcher_preserves_blocking_exit_code_two(tmp_path: Path) -> None:
 
     proc = subprocess.run(
         [node, str(HOOK_LAUNCHER), str(script), "payload"],
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=15,
+    )
+
+    assert proc.returncode == 2
+
+
+def test_hook_launcher_reads_codex_tool_input_from_stdin(tmp_path: Path) -> None:
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node is not available in this test environment")
+
+    target = tmp_path / "page.html"
+    target.write_text("<html></html>", encoding="utf-8")
+    script = tmp_path / "check.py"
+    script.write_text(
+        "import pathlib, sys\n"
+        f"assert pathlib.Path(sys.argv[1]) == pathlib.Path({str(target)!r})\n"
+        "sys.exit(2)\n",
+        encoding="utf-8",
+    )
+    env = os.environ.copy()
+    env["CLAUDE_SEO_PYTHON"] = sys.executable
+
+    proc = subprocess.run(
+        [node, str(HOOK_LAUNCHER), str(script)],
+        input=json.dumps({"tool_input": {"file_path": str(target)}}),
         env=env,
         capture_output=True,
         text=True,
